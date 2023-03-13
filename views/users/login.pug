@@ -10,4 +10,9 @@ block content
                     input(type="text" name="email" id="email")
                 div.input-container
                     label(for="password") Password
-                    inbput(type="password" name="password" id="password")
+                    input(type="password" name="password" id="password")
+
+            div.form-button-row
+                button.button.primary(type="submit") Log In
+        if error
+            p.error=error
