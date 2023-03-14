@@ -11,25 +11,33 @@ function addUserToView(req, res, next){
     next();
 }
 
+function redirectGuests(req, res, next){
+    if (!req.user){
+        res.redirect('/login');
+    } else {
+        next();
+    }
+}
 
 /* GET home page. */
-router.get('/',  todoController.listAll);
+router.get('/', addUserToView, redirectGuests,  todoController.listAll);
 
+router.get('/item/add', addUserToView, redirectGuests,  todoController.displayAddItem);
+router.post('/item/add', addUserToView, redirectGuests,  todoController.addNewItem);
 
-router.get('/item/add',  todoController.displayAddItem);
-router.post('/item/add',  todoController.addNewItem);
+router.get('/item/edit/:id', addUserToView, redirectGuests,  todoController.viewEditItem);
+router.post('/item/edit/:id', addUserToView, redirectGuests,  todoController.saveEditItem);
 
-router.get('/item/edit/:id',  todoController.viewEditItem);
-router.post('/item/edit/:id',  todoController.saveEditItem);
+router.get('/item/delete/:id', addUserToView, redirectGuests,  todoController.deleteItem);
+router.get('/item/complete/:id', addUserToView, redirectGuests,  todoController.makeItemComplete);
+router.get('/item/incomplete/:id', addUserToView, redirectGuests,  todoController.markItemIncomplete);
 
-router.get('/item/delete/:id',  todoController.deleteItem);
-router.get('/item/complete/:id',  todoController.makeItemComplete);
-router.get('/item/incomplete/:id',  todoController.markItemIncomplete);
+router.get('/register', addUserToView, userController.renderRegistration);
+router.post('/register', addUserToView, userController.register);
 
-router.get('/register', userController.renderRegistration);
-router.post('/register', userController.register);
+router.get('/login', addUserToView, userController.renderLogin);
+router.post('/login', addUserToView, userController.authenticate);
 
-router.get('/login', userController.renderLogin);
-router.post('/login', userController.authenticate);
-router.get('/logout', userController.logout);
+router.get('/logout', addUserToView, redirectGuests, userController.logout);
+
 module.exports = router;
